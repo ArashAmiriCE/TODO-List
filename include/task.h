@@ -13,10 +13,12 @@ typedef struct
 typedef struct
 {
     char title[MAX_TITLE_LEN];
-    char note[MAX_NOTE_LEN];
+    char description[MAX_DESCRIPTION_LEN];
     int priority;
     bool completed;
-    char deadline[11];
+    int deadlineDay;
+    int deadlineMonth;
+    int deadlineYear;
     char categories[MAX_CATEGORIES][MAX_CATEGORY_LEN];
     int categoryCount;
     SubTask subtasks[MAX_SUBTASKS];
@@ -24,5 +26,8 @@ typedef struct
 } Task;
 
 void init_tasks(void);
+void add_task();
+void delete_task(int index);
+void toggle_task(int index);
 
 #endif

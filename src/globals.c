@@ -5,6 +5,8 @@
 Task tasks[MAX_TASKS];
 int taskCount;
 int selectedTask;
+int selectedSubTask;
+int selectedCategory;
 int running;
 WINDOW *taskswin;
 WINDOW *descriptionwin;

@@ -7,6 +7,8 @@
 extern Task tasks[MAX_TASKS];
 extern int taskCount;
 extern int selectedTask;
+extern int selectedSubTask;
+extern int selectedCategory;
 extern int running;
 extern WINDOW *taskswin;
 extern WINDOW *descriptionwin;
