@@ -12,6 +12,6 @@ extern WINDOW *taskswin;
 extern WINDOW *descriptionwin;
 extern WINDOW *categorieswin;
 extern WINDOW *subtaskswin;
-extern WINDOW *deadlinewin; 
-
+extern WINDOW *deadlinewin;
+void init_todo_color();
 #endif

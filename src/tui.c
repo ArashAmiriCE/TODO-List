@@ -8,10 +8,9 @@ void init_tui(){
         fprintf(stderr, "Your terminal doesn't support colors!");
         exit(EXIT_FAILURE);
     }
-    start_color();
+    init_todo_color();
     int xmax, ymax;
     getmaxyx(stdscr, ymax, xmax);
-    init_pair(1, COLOR_YELLOW, COLOR_BLACK);
     taskswin = newwin(ymax/2 + ymax/4, xmax/2, 0, 0);
     descriptionwin = newwin(ymax/2, xmax/2 , 0, xmax/2 );
     categorieswin = newwin(ymax/4, xmax/2 , ymax/2 , xmax/2 );
