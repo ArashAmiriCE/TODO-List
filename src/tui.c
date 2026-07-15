@@ -1,13 +1,14 @@
 #include <ncurses.h>
 #include "../include/globals.h"
+#include "../include/tui.h"
 
 void init_tui(){
     initscr();
-    if (!has_colors()) {
-        endwin();
-        fprintf(stderr, "Your terminal doesn't support colors!");
-        exit(EXIT_FAILURE);
-    }
+    // if (!has_colors()) {
+    //     endwin();
+    //     fprintf(stderr, "Your terminal doesn't support colors!");
+    //     exit(EXIT_FAILURE);
+    // }
     init_todo_color();
     int xmax, ymax;
     getmaxyx(stdscr, ymax, xmax);
