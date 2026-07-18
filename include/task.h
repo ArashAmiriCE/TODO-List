@@ -24,10 +24,6 @@ typedef struct
     SubTask subtasks[MAX_SUBTASKS];
     int subtaskCount;
 } Task;
-
-void init_tasks(void);
 void add_task();
-void delete_task(int index);
-void toggle_task(int index);
 
 #endif
