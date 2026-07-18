@@ -18,11 +18,7 @@ void init_tui(){
     subtaskswin = newwin(ymax/4, xmax/2, ymax/2 + ymax/4 , 0);
     deadlinewin = newwin(ymax/4, xmax/2 , ymax/2 + ymax/4 , xmax/2 );
     refresh();
-    draw_tasks();
-    draw_description();
-    draw_categories();
-    draw_subtasks();
-    draw_deadline();
+    draw_all_windows();
 }
 
 void draw_tasks(void){
@@ -136,4 +132,12 @@ void draw_deadline(){
     }
     wattroff(deadlinewin, COLOR_PAIR(1));
     wrefresh(deadlinewin);
+}
+
+void draw_all_windows(){
+    draw_tasks();
+    draw_description();
+    draw_categories();
+    draw_subtasks();
+    draw_deadline();
 }

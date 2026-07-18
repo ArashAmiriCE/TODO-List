@@ -9,5 +9,6 @@ extern void draw_description(void);
 extern void draw_categories(void);
 extern void draw_subtasks(void);
 extern void draw_deadline(void);
+extern void draw_all_windows(void);
 
 #endif
