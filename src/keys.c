@@ -61,6 +61,7 @@ void key_input(){
             break;
         case 'a':
             if(whereWeAre == winTask) add_task();
+            if(whereWeAre == winSubTask) add_subtask();
             break;
         case 'l':
             if (selectedTask > 0){

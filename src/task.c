@@ -70,3 +70,45 @@ void add_task() {
     draw_all_windows();
     refresh();
 }
+
+void add_subtask(){
+    char title[MAX_TITLE_LEN + 1] = {0};
+    selectedSubTask = 0;
+    draw_subtasks();
+    int pos = 0;
+    int cursorRow = tasks[selectedTask].subtaskCount + 1; 
+    int ch;
+    wattron(subtaskswin, COLOR_PAIR(1));
+    wattron(subtaskswin, A_REVERSE);
+    mvwprintw(subtaskswin, cursorRow, 2, "%d. [ ] ", tasks[selectedTask].subtaskCount + 1);
+    wrefresh(subtaskswin);
+    while((ch = getch()) != '\n' && ch != KEY_ENTER){
+        if (ch == KEY_BACKSPACE || ch == 127){
+            if (pos > 0) {
+                pos--;
+                title[pos] = '\0';
+            }
+        }
+        else if (ch >= 32 && ch <= 126 && pos < MAX_TITLE_LEN) {
+            title[pos] = (char)ch;
+            pos++;
+            title[pos] = '\0';
+        }
+        wattroff(subtaskswin, A_REVERSE);
+        wattroff(subtaskswin, COLOR_PAIR(1));
+        clear_line(subtaskswin, cursorRow, 2, getmaxx(subtaskswin) - 1);
+        wattron(subtaskswin, COLOR_PAIR(1));
+        wattron(subtaskswin, A_REVERSE);
+        mvwprintw(subtaskswin, cursorRow, 2, "%d. [ ] %s", tasks[selectedTask].subtaskCount + 1, title);
+        wrefresh(subtaskswin);
+    }
+    wattroff(subtaskswin, A_REVERSE);
+    wattroff(subtaskswin, COLOR_PAIR(1));
+    tasks[selectedTask].subtaskCount++;
+    strncpy(tasks[selectedTask].subtasks[tasks[selectedTask].subtaskCount].title, title, MAX_TITLE_LEN - 1);
+    tasks[selectedTask].subtasks[tasks[selectedTask].subtaskCount].title[MAX_TITLE_LEN - 1] = '\0';
+    tasks[selectedTask].subtasks[tasks[selectedTask].subtaskCount].completed = false;
+    selectedSubTask = 1;
+    draw_all_windows();
+    refresh();
+}
