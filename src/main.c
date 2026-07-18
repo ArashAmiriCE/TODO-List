@@ -1,8 +1,9 @@
 #include <ncurses.h>
 #include "../include/tui.h"
+#include "../include/keys.h"
 int main(){
     init_tui();
-    getch();
+    key_input();
     endwin();
     return 0;
 }
