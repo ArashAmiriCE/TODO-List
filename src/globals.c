@@ -1,7 +1,7 @@
 #include "../include/globals.h"
 #include "../include/task.h"
 #include <ncurses.h>
-
+enum whichWindow whereWeAre;
 Task tasks[MAX_TASKS];
 int taskCount;
 int selectedTask;

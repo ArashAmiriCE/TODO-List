@@ -11,7 +11,7 @@ void key_input(){
         switch (input)
         {
         case 'k':
-            if(selectedSubTask == 0 && selectedCategory == 0){
+            if(whereWeAre == winTask){
                 if(selectedTask == 0) selectedTask = taskCount;
                 else {
                     selectedTask = selectedTask - 1;
@@ -20,17 +20,13 @@ void key_input(){
                 draw_all_windows();
                 break;
             }
-            else if (selectedSubTask != 0 && selectedCategory != 0){
-                //will be error message soon!
-                break;
-            }
-            else if (selectedSubTask != 0){
+            else if (whereWeAre == winSubTask){
                 selectedSubTask -= 1;
                 if(selectedSubTask == 0) selectedSubTask = tasks[selectedTask].subtaskCount;
                 draw_all_windows();
                 break;
             }
-            else if (selectedCategory != 0){
+            else if (whereWeAre == winCategory){
                 selectedCategory -= 1;
                 if(selectedCategory == 0) selectedCategory = tasks[selectedTask].categoryCount;
                 draw_all_windows();
@@ -38,7 +34,7 @@ void key_input(){
             }
             break;
         case 'j':
-            if(selectedSubTask == 0 && selectedCategory == 0){
+            if(whereWeAre == winTask){
                 if (taskCount == 0) break;
                 if(selectedTask == 0) selectedTask = 1;
                 else {
@@ -48,17 +44,13 @@ void key_input(){
                 draw_all_windows();
                 break;
             }
-            else if (selectedSubTask != 0 && selectedCategory != 0){
-                //will be error message soon!
-                break;
-            }
-            else if (selectedSubTask != 0){
+            else if (whereWeAre == winSubTask){
                 selectedSubTask = selectedSubTask + 1;
                 if(selectedSubTask > tasks[selectedTask].subtaskCount) selectedSubTask = 1;
                 draw_all_windows();
                 break;
             }
-            else if (selectedCategory != 0){
+            else if (whereWeAre == winCategory){
                 selectedCategory = selectedCategory + 1;
                 if(selectedCategory > tasks[selectedTask].categoryCount) selectedCategory = 1;
                 draw_all_windows();

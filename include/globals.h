@@ -4,6 +4,8 @@
 #include <ncurses.h>
 #include "task.h"
 
+enum whichWindow {winTask, winCategory, winSubTask, winDeadline, winDescription};
+extern enum whichWindow whereWeAre;
 extern Task tasks[MAX_TASKS];
 extern int taskCount;
 extern int selectedTask;
