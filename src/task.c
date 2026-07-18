@@ -64,7 +64,7 @@ void add_task() {
         tasks[taskCount].subtasks[i].title[0] = '\0';
         tasks[taskCount].subtasks[i].completed = false;
     }
-    selectedTask = taskCount;
+    selectedTask = 1;
     selectedSubTask = 0;
     selectedCategory = 0;
     draw_all_windows();
