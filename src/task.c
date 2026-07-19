@@ -127,3 +127,23 @@ void del_subtask(){
     if(selectedSubTask > count_of_subtasks - 1) selectedSubTask = count_of_subtasks - 1;
     draw_all_windows();
 }
+
+void check_subtask(){
+    if(whereWeAre != winSubTask || selectedSubTask == 0) return;
+    tasks[selectedTask].subtasks[selectedSubTask].completed = true;
+    bool isAllCheck = true;
+    for(int i = 1; i <= tasks[selectedTask].subtaskCount; i++)
+        if(tasks[selectedTask].subtasks[i].completed == false){
+            isAllCheck = false;
+            break;
+        }
+    if(isAllCheck) tasks[selectedTask].completed = true;
+    draw_all_windows();
+}
+
+void uncheck_subtask(){
+    if(whereWeAre != winSubTask || selectedSubTask == 0) return;
+    tasks[selectedTask].subtasks[selectedSubTask].completed = false;
+    if(tasks[selectedTask].completed == true) tasks[selectedTask].completed = false;
+    draw_all_windows();
+}

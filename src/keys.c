@@ -90,6 +90,14 @@ void key_input(){
         case 'd':
             if(whereWeAre == winSubTask) del_subtask();
             break;
+        case ' ':
+            if(whereWeAre == winSubTask && selectedSubTask != 0){
+                if(tasks[selectedTask].subtasks[selectedSubTask].completed == false)
+                    check_subtask();
+                else
+                    uncheck_subtask();
+            }
+            break;
         default:
             break;
         }

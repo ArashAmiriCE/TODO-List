@@ -27,4 +27,6 @@ typedef struct
 void add_task();
 void add_subtask();
 void del_subtask();
+void check_subtask();
+void uncheck_subtask();
 #endif
