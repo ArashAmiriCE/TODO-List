@@ -107,6 +107,9 @@ void key_input(){
             if(whereWeAre == winSubTask) edit_subtask();
             else if(whereWeAre == winTask) edit_task();
             break;
+        case 'r':
+            if(whereWeAre == winTask) edit_description();
+            break;
         default:
             break;
         }

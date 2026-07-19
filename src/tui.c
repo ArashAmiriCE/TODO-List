@@ -51,7 +51,17 @@ void draw_description(void){
     box(descriptionwin, 0, 0);
     mvwprintw(descriptionwin, 0, 1, " Description ");
     if(selectedTask != 0){
-        mvwprintw(descriptionwin, 1,1,tasks[selectedTask].description);
+        int line = 1;
+        int col = 2;
+        for (int i = 0; tasks[selectedTask].description[i] != '\0'; i++) {
+            if (col >= getmaxx(descriptionwin) - 2) {
+                line++;
+                col = 2;
+            }
+            mvwprintw(descriptionwin, line, col, "%c", tasks[selectedTask].description[i]);
+            col++;
+        }
+        wrefresh(descriptionwin);
     }
     wattroff(descriptionwin, COLOR_PAIR(1));
     wrefresh(descriptionwin);

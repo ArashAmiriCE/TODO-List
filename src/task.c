@@ -268,3 +268,67 @@ void edit_task(){
         tasks[selectedTask].title[i] = title[i];
     draw_tasks();
 }
+
+void edit_description(){
+    if(whereWeAre != winTask || selectedTask == 0) return;
+    char description[MAX_DESCRIPTION_LEN + 1] = {0};
+    strncpy(description, tasks[selectedTask].description, MAX_DESCRIPTION_LEN);
+    int pos = strlen(description);
+    int ch;
+    wattron(descriptionwin, COLOR_PAIR(1));
+    werase(descriptionwin);
+    box(descriptionwin, 0, 0);
+    mvwprintw(descriptionwin, 0, 1, " Description ");
+    wattroff(descriptionwin, COLOR_PAIR(1));
+    int line = 1;
+    int col = 2;
+    wattron(descriptionwin, COLOR_PAIR(1));
+    wattron(descriptionwin, A_REVERSE);
+    for (int i = 0; description[i] != '\0'; i++) {
+        if (col >= getmaxx(descriptionwin) - 2) {
+            line++;
+            col = 2;
+        }
+        mvwprintw(descriptionwin, line, col, "%c", description[i]);
+        col++;
+    }
+    wattroff(descriptionwin, A_REVERSE);
+    wattroff(descriptionwin, COLOR_PAIR(1));
+    wrefresh(descriptionwin);
+    while ((ch = getch()) != '\n' && ch != KEY_ENTER) {
+        if (ch == KEY_BACKSPACE || ch == 127) {
+            if (pos > 0) {
+                pos--;
+                description[pos] = '\0';
+            }
+        }
+        else if (ch >= 32 && ch <= 126 && pos < MAX_DESCRIPTION_LEN) {
+            description[pos] = (char)ch;
+            pos++;
+            description[pos] = '\0';
+        }
+        wattron(descriptionwin, COLOR_PAIR(1));
+        werase(descriptionwin);
+        box(descriptionwin, 0, 0);
+        mvwprintw(descriptionwin, 0, 1, " Description ");
+        wattroff(descriptionwin, COLOR_PAIR(1));
+        int line = 1;
+        int col = 2;
+        wattron(descriptionwin, COLOR_PAIR(1));
+        wattron(descriptionwin, A_REVERSE);
+        for (int i = 0; description[i] != '\0'; i++) {
+            if (col >= getmaxx(descriptionwin) - 2) {
+                line++;
+                col = 2;
+            }
+            mvwprintw(descriptionwin, line, col, "%c", description[i]);
+            col++;
+        }
+        wattroff(descriptionwin, A_REVERSE);
+        wattroff(descriptionwin, COLOR_PAIR(1));
+        wrefresh(descriptionwin);
+    }
+    strncpy(tasks[selectedTask].description, description, MAX_DESCRIPTION_LEN);
+    tasks[selectedTask].description[MAX_DESCRIPTION_LEN - 1] = '\0';
+    draw_all_windows();
+}
