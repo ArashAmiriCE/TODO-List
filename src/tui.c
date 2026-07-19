@@ -119,7 +119,6 @@ void draw_deadline(){
     mvwprintw(deadlinewin, 0, 1, " Deadline ");
     if (selectedTask != 0){
         if (tasks[selectedTask].deadlineDay == 0 || tasks[selectedTask].deadlineMonth == 0 || tasks[selectedTask].deadlineYear == 0){
-            mvwprintw(deadlinewin, 1, 1, "No deadline!");
             wattroff(deadlinewin, COLOR_PAIR(1));
             wrefresh(deadlinewin);
             return;
@@ -131,7 +130,7 @@ void draw_deadline(){
                 yearCopy /= 10;
                 yearDigits++;
             }
-            wmove(deadlinewin, 1, 1);
+            wmove(deadlinewin, 1, 2);
             for(int i = 0; i < 4 - yearDigits; i++) wprintw(deadlinewin, "0");
             wprintw(deadlinewin, "%d/", tasks[selectedTask].deadlineYear);
             if (tasks[selectedTask].deadlineMonth / 10 == 0) wprintw(deadlinewin, "0");

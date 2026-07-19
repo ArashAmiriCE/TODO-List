@@ -332,3 +332,68 @@ void edit_description(){
     tasks[selectedTask].description[MAX_DESCRIPTION_LEN - 1] = '\0';
     draw_all_windows();
 }
+
+void insert_deadline(){
+    int day, month, year = 0;
+    wattron(deadlinewin, COLOR_PAIR(1));
+    wmove(deadlinewin, 1, 2);
+    wprintw(deadlinewin,"0000/00/");
+    wattron(deadlinewin, A_REVERSE);
+    wprintw(deadlinewin, "_");
+    wattroff(deadlinewin, A_REVERSE);
+    wprintw(deadlinewin, "0");
+    wrefresh(deadlinewin);
+    char ch = getch();
+    if((ch - '0') >= 0 && (ch - '0') <= 3) day = 10 * (ch - '0');
+    else {
+        draw_deadline();
+        return;
+    }
+    mvwprintw(deadlinewin, 1, 10, "%c", ch);
+    wattron(deadlinewin, A_REVERSE);
+    mvwprintw(deadlinewin, 1, 11, "_");
+    wattroff(deadlinewin, A_REVERSE);
+    wrefresh(deadlinewin);
+    ch = getch();
+    day += ch - '0';
+    if (day < 1 || day > 32){
+        draw_deadline();
+        return;
+    }
+    mvwprintw(deadlinewin, 1, 11, "%c", ch);
+    wattron(deadlinewin, A_REVERSE);
+    mvwprintw(deadlinewin, 1, 7, "_");
+    wattroff(deadlinewin, A_REVERSE);
+    wrefresh(deadlinewin);
+    ch = getch();
+    month = 10 * (ch - '0');
+    if((ch - '0') != 0 && (ch - '0') != 1){
+        draw_deadline();
+        return;
+    }
+    mvwprintw(deadlinewin, 1, 7, "%c", ch);
+    wattron(deadlinewin, A_REVERSE);
+    mvwprintw(deadlinewin, 1, 8, "_");
+    wattroff(deadlinewin, A_REVERSE);
+    wrefresh(deadlinewin);
+    ch = getch();
+    month += ch - '0';
+    if(month < 1 || month > 12){
+        draw_deadline();
+        return;
+    }
+    mvwprintw(deadlinewin, 1, 8, "%c", ch);
+    for(int i = 0; i < 4; i++){
+        wattron(deadlinewin, A_REVERSE);
+        mvwprintw(deadlinewin, 1, 2 + i, "_");
+        wattroff(deadlinewin, A_REVERSE);
+        wrefresh(deadlinewin);
+        ch = getch();
+        year = year * 10 + (ch - '0');
+        mvwprintw(deadlinewin, 1, 2 + i, "%c", ch);
+    }
+    tasks[selectedTask].deadlineDay = day;
+    tasks[selectedTask].deadlineMonth = month;
+    tasks[selectedTask].deadlineYear = year;
+    draw_all_windows();
+}

@@ -35,4 +35,5 @@ void check_task();
 void uncheck_task();
 void edit_task();
 void edit_description();
+void insert_deadline();
 #endif

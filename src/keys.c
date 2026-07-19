@@ -110,6 +110,9 @@ void key_input(){
         case 'r':
             if(whereWeAre == winTask) edit_description();
             break;
+        case 'n':
+            if(whereWeAre == winTask) insert_deadline();
+            break;
         default:
             break;
         }
