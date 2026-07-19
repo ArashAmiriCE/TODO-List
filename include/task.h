@@ -29,4 +29,5 @@ void add_subtask();
 void del_subtask();
 void check_subtask();
 void uncheck_subtask();
+void edit_subtask();
 #endif

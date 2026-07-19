@@ -98,6 +98,9 @@ void key_input(){
                     uncheck_subtask();
             }
             break;
+        case 'e':
+            if(whereWeAre == winSubTask) edit_subtask();
+            break;
         default:
             break;
         }
