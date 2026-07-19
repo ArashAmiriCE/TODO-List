@@ -98,3 +98,21 @@ void del_task(){
     if(selectedTask > taskCount) selectedTask = taskCount;
     draw_all_windows();
 }
+
+void check_task(){
+    if(whereWeAre != winTask || selectedTask == 0) return;
+    tasks[selectedTask].completed = true;
+    for(int i = 1; i <= tasks[selectedTask].subtaskCount; i++){
+        tasks[selectedTask].subtasks[i].completed = true;
+    }
+    draw_all_windows();
+}
+
+void uncheck_task(){
+    if(whereWeAre != winTask || selectedTask == 0) return;
+    tasks[selectedTask].completed = false;
+    for(int i = 1; i <= tasks[selectedTask].subtaskCount; i++){
+        tasks[selectedTask].subtasks[i].completed = false;
+    }
+    draw_all_windows();
+}

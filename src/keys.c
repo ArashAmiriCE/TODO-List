@@ -63,6 +63,12 @@ void key_input(){
         case 'd':
             if(whereWeAre == winTask) del_task();
             break;
+        case ' ':
+            if(whereWeAre == winTask && selectedTask != 0){
+                if(tasks[selectedTask].completed == false) check_task();
+                else uncheck_task();
+            }
+            break;
         default:
             break;
         }

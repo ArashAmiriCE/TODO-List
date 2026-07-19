@@ -26,5 +26,6 @@ typedef struct
 } Task;
 void add_task();
 void del_task();
-
+void check_task();
+void uncheck_task();
 #endif
