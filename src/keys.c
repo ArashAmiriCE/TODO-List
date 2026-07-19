@@ -60,6 +60,9 @@ void key_input(){
         case 'a':
             add_task();
             break;
+        case 'd':
+            if(whereWeAre == winTask) del_task();
+            break;
         default:
             break;
         }

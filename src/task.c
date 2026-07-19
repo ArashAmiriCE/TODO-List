@@ -70,3 +70,31 @@ void add_task() {
     draw_all_windows();
     refresh();
 }
+
+void del_task(){
+    if(selectedTask == 0 || whereWeAre != winTask) return;
+    for(int i = selectedTask; i < taskCount; i++){
+        tasks[i] = tasks[i + 1];
+    }
+    for(int i = 0; i < MAX_TITLE_LEN; i++) tasks[taskCount].title[i] = '\0';
+    for(int i = 0; i < MAX_DESCRIPTION_LEN; i++) tasks[taskCount].description[i] = '\0';
+    tasks[taskCount].priority = 0;
+    tasks[taskCount].completed = false;
+    tasks[taskCount].deadlineDay = 0;
+    tasks[taskCount].deadlineMonth = 0;
+    tasks[taskCount].deadlineYear = 0;
+    for(int i = 0; i < MAX_CATEGORIES; i++)
+        for(int j = 0; j < MAX_CATEGORY_LEN; j++)
+            tasks[taskCount].categories[i][j] = '\0';
+    tasks[taskCount].categoryCount = 0;
+    for(int i = 0; i < MAX_SUBTASKS; i++){
+        tasks[taskCount].subtasks[i].completed = false;
+        for(int j = 0; j < MAX_TITLE_LEN; j++){
+            tasks[taskCount].subtasks[i].title[j] = '\0';
+        }
+    }
+    tasks[taskCount].subtaskCount = 0;
+    taskCount--;
+    if(selectedTask > taskCount) selectedTask = taskCount;
+    draw_all_windows();
+}

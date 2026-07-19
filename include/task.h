@@ -25,5 +25,6 @@ typedef struct
     int subtaskCount;
 } Task;
 void add_task();
+void del_task();
 
 #endif
