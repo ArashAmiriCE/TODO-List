@@ -30,4 +30,8 @@ void del_subtask();
 void check_subtask();
 void uncheck_subtask();
 void edit_subtask();
+void del_task();
+void check_task();
+void uncheck_task();
+void edit_task();
 #endif

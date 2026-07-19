@@ -185,3 +185,86 @@ void edit_subtask(){
         tasks[selectedTask].subtasks[selectedSubTask].title[i] = title[i];
     draw_subtasks();
 }
+void del_task(){
+    if(selectedTask == 0 || whereWeAre != winTask) return;
+    for(int i = selectedTask; i < taskCount; i++){
+        tasks[i] = tasks[i + 1];
+    }
+    for(int i = 0; i < MAX_TITLE_LEN; i++) tasks[taskCount].title[i] = '\0';
+    for(int i = 0; i < MAX_DESCRIPTION_LEN; i++) tasks[taskCount].description[i] = '\0';
+    tasks[taskCount].priority = 0;
+    tasks[taskCount].completed = false;
+    tasks[taskCount].deadlineDay = 0;
+    tasks[taskCount].deadlineMonth = 0;
+    tasks[taskCount].deadlineYear = 0;
+    for(int i = 0; i < MAX_CATEGORIES; i++)
+        for(int j = 0; j < MAX_CATEGORY_LEN; j++)
+            tasks[taskCount].categories[i][j] = '\0';
+    tasks[taskCount].categoryCount = 0;
+    for(int i = 0; i < MAX_SUBTASKS; i++){
+        tasks[taskCount].subtasks[i].completed = false;
+        for(int j = 0; j < MAX_TITLE_LEN; j++){
+            tasks[taskCount].subtasks[i].title[j] = '\0';
+        }
+    }
+    tasks[taskCount].subtaskCount = 0;
+    taskCount--;
+    if(selectedTask > taskCount) selectedTask = taskCount;
+    draw_all_windows();
+}
+
+void check_task(){
+    if(whereWeAre != winTask || selectedTask == 0) return;
+    tasks[selectedTask].completed = true;
+    for(int i = 1; i <= tasks[selectedTask].subtaskCount; i++){
+        tasks[selectedTask].subtasks[i].completed = true;
+    }
+    draw_all_windows();
+}
+
+void uncheck_task(){
+    if(whereWeAre != winTask || selectedTask == 0) return;
+    tasks[selectedTask].completed = false;
+    for(int i = 1; i <= tasks[selectedTask].subtaskCount; i++){
+        tasks[selectedTask].subtasks[i].completed = false;
+    }
+    draw_all_windows();
+}
+
+void edit_task(){
+    if(whereWeAre != winTask || selectedTask == 0) return;
+    int pos = 0;
+    int ch;
+    char title [MAX_TITLE_LEN + 1] = {0};
+    clear_line(taskswin, selectedTask, 2, getmaxx(taskswin) - 1);
+    wattron(taskswin, COLOR_PAIR(1));
+    wattron(taskswin, A_REVERSE);
+    wmove(taskswin, selectedTask, 2);
+    wprintw(taskswin, "%d. [%c] ", selectedTask, tasks[selectedTask].completed ? 'x' : ' ');
+    wrefresh(taskswin);
+    while((ch = getch()) != '\n' && ch != KEY_ENTER){
+        if (ch == KEY_BACKSPACE || ch == 127){
+            if (pos > 0) {
+                pos--;
+                title[pos] = '\0';
+            }
+        }
+        else if (ch >= 32 && ch <= 126 && pos < MAX_TITLE_LEN) {
+            title[pos] = (char)ch;
+            pos++;
+            title[pos] = '\0';
+        }
+        wattroff(taskswin, A_REVERSE);
+        wattroff(taskswin, COLOR_PAIR(1));
+        clear_line(taskswin, selectedTask, 2, getmaxx(taskswin) - 1);
+        wattron(taskswin, COLOR_PAIR(1));
+        wattron(taskswin, A_REVERSE);
+        mvwprintw(taskswin, selectedTask, 2, "%d. [%c] %s", selectedTask,tasks[selectedTask].completed ? 'x' : ' ', title);
+        wrefresh(taskswin);
+    }
+    wattroff(taskswin, A_REVERSE);
+    wattroff(taskswin, COLOR_PAIR(1));
+    for(int i = 0; i < MAX_TITLE_LEN; i++)
+        tasks[selectedTask].title[i] = title[i];
+    draw_tasks();
+}
