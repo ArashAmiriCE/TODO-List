@@ -87,6 +87,9 @@ void key_input(){
                 break;
             }
             break;
+        case 'd':
+            if(whereWeAre == winSubTask) del_subtask();
+            break;
         default:
             break;
         }

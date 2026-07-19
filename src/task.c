@@ -112,3 +112,18 @@ void add_subtask(){
     draw_all_windows();
     refresh();
 }
+
+void del_subtask(){
+    if(selectedTask == 0) return;
+    if(whereWeAre != winSubTask) return;
+    if(selectedSubTask == 0) return;
+    int count_of_subtasks = tasks[selectedTask].subtaskCount;
+    for(int i = selectedSubTask; i < count_of_subtasks; i++){
+        tasks[selectedTask].subtasks[i] = tasks[selectedTask].subtasks[i + 1];
+    }
+    tasks[selectedTask].subtasks[count_of_subtasks].completed = false;
+    for(int i = 0; i < MAX_TITLE_LEN; i++) tasks[selectedTask].subtasks[count_of_subtasks].title[i] = '\0';
+    tasks[selectedTask].subtaskCount--;
+    if(selectedSubTask > count_of_subtasks - 1) selectedSubTask = count_of_subtasks - 1;
+    draw_all_windows();
+}
