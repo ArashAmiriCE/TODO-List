@@ -71,6 +71,120 @@ void add_task() {
     refresh();
 }
 
+void add_subtask(){
+    char title[MAX_TITLE_LEN + 1] = {0};
+    selectedSubTask = 0;
+    draw_subtasks();
+    int pos = 0;
+    int cursorRow = tasks[selectedTask].subtaskCount + 1; 
+    int ch;
+    wattron(subtaskswin, COLOR_PAIR(1));
+    wattron(subtaskswin, A_REVERSE);
+    mvwprintw(subtaskswin, cursorRow, 2, "%d. [ ] ", tasks[selectedTask].subtaskCount + 1);
+    wrefresh(subtaskswin);
+    while((ch = getch()) != '\n' && ch != KEY_ENTER){
+        if (ch == KEY_BACKSPACE || ch == 127){
+            if (pos > 0) {
+                pos--;
+                title[pos] = '\0';
+            }
+        }
+        else if (ch >= 32 && ch <= 126 && pos < MAX_TITLE_LEN) {
+            title[pos] = (char)ch;
+            pos++;
+            title[pos] = '\0';
+        }
+        wattroff(subtaskswin, A_REVERSE);
+        wattroff(subtaskswin, COLOR_PAIR(1));
+        clear_line(subtaskswin, cursorRow, 2, getmaxx(subtaskswin) - 1);
+        wattron(subtaskswin, COLOR_PAIR(1));
+        wattron(subtaskswin, A_REVERSE);
+        mvwprintw(subtaskswin, cursorRow, 2, "%d. [ ] %s", tasks[selectedTask].subtaskCount + 1, title);
+        wrefresh(subtaskswin);
+    }
+    wattroff(subtaskswin, A_REVERSE);
+    wattroff(subtaskswin, COLOR_PAIR(1));
+    tasks[selectedTask].subtaskCount++;
+    strncpy(tasks[selectedTask].subtasks[tasks[selectedTask].subtaskCount].title, title, MAX_TITLE_LEN - 1);
+    tasks[selectedTask].subtasks[tasks[selectedTask].subtaskCount].title[MAX_TITLE_LEN - 1] = '\0';
+    tasks[selectedTask].subtasks[tasks[selectedTask].subtaskCount].completed = false;
+    selectedSubTask = 1;
+    draw_all_windows();
+    refresh();
+}
+
+void del_subtask(){
+    if(selectedTask == 0) return;
+    if(whereWeAre != winSubTask) return;
+    if(selectedSubTask == 0) return;
+    int count_of_subtasks = tasks[selectedTask].subtaskCount;
+    for(int i = selectedSubTask; i < count_of_subtasks; i++){
+        tasks[selectedTask].subtasks[i] = tasks[selectedTask].subtasks[i + 1];
+    }
+    tasks[selectedTask].subtasks[count_of_subtasks].completed = false;
+    for(int i = 0; i < MAX_TITLE_LEN; i++) tasks[selectedTask].subtasks[count_of_subtasks].title[i] = '\0';
+    tasks[selectedTask].subtaskCount--;
+    if(selectedSubTask > count_of_subtasks - 1) selectedSubTask = count_of_subtasks - 1;
+    draw_all_windows();
+}
+
+void check_subtask(){
+    if(whereWeAre != winSubTask || selectedSubTask == 0) return;
+    tasks[selectedTask].subtasks[selectedSubTask].completed = true;
+    bool isAllCheck = true;
+    for(int i = 1; i <= tasks[selectedTask].subtaskCount; i++)
+        if(tasks[selectedTask].subtasks[i].completed == false){
+            isAllCheck = false;
+            break;
+        }
+    if(isAllCheck) tasks[selectedTask].completed = true;
+    draw_all_windows();
+}
+
+void uncheck_subtask(){
+    if(whereWeAre != winSubTask || selectedSubTask == 0) return;
+    tasks[selectedTask].subtasks[selectedSubTask].completed = false;
+    if(tasks[selectedTask].completed == true) tasks[selectedTask].completed = false;
+    draw_all_windows();
+}
+
+void edit_subtask(){
+    if(whereWeAre != winSubTask || selectedTask == 0) return;
+    int pos = 0;
+    int ch;
+    char title [MAX_TITLE_LEN + 1] = {0};
+    clear_line(subtaskswin, selectedSubTask, 2, getmaxx(subtaskswin) - 1);
+    wattron(subtaskswin, COLOR_PAIR(1));
+    wattron(subtaskswin, A_REVERSE);
+    wmove(subtaskswin, selectedSubTask, 2);
+    wprintw(subtaskswin, "%d. [%c] ", selectedSubTask, tasks[selectedTask].subtasks[selectedSubTask].completed ? 'x' : ' ');
+    wrefresh(subtaskswin);
+    while((ch = getch()) != '\n' && ch != KEY_ENTER){
+        if (ch == KEY_BACKSPACE || ch == 127){
+            if (pos > 0) {
+                pos--;
+                title[pos] = '\0';
+            }
+        }
+        else if (ch >= 32 && ch <= 126 && pos < MAX_TITLE_LEN) {
+            title[pos] = (char)ch;
+            pos++;
+            title[pos] = '\0';
+        }
+        wattroff(subtaskswin, A_REVERSE);
+        wattroff(subtaskswin, COLOR_PAIR(1));
+        clear_line(subtaskswin, selectedSubTask, 2, getmaxx(subtaskswin) - 1);
+        wattron(subtaskswin, COLOR_PAIR(1));
+        wattron(subtaskswin, A_REVERSE);
+        mvwprintw(subtaskswin, selectedSubTask, 2, "%d. [%c] %s", selectedSubTask,tasks[selectedTask].subtasks[selectedSubTask].completed ? 'x' : ' ', title);
+        wrefresh(subtaskswin);
+    }
+    wattroff(subtaskswin, A_REVERSE);
+    wattroff(subtaskswin, COLOR_PAIR(1));
+    for(int i = 0; i < MAX_TITLE_LEN; i++)
+        tasks[selectedTask].subtasks[selectedSubTask].title[i] = title[i];
+    draw_subtasks();
+}
 void del_task(){
     if(selectedTask == 0 || whereWeAre != winTask) return;
     for(int i = selectedTask; i < taskCount; i++){

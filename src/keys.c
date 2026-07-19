@@ -21,6 +21,7 @@ void key_input(){
                 break;
             }
             else if (whereWeAre == winSubTask){
+                if(tasks[selectedTask].subtaskCount == 0) break;
                 selectedSubTask -= 1;
                 if(selectedSubTask == 0) selectedSubTask = tasks[selectedTask].subtaskCount;
                 draw_all_windows();
@@ -45,6 +46,7 @@ void key_input(){
                 break;
             }
             else if (whereWeAre == winSubTask){
+                if(tasks[selectedTask].subtaskCount == 0) break;
                 selectedSubTask = selectedSubTask + 1;
                 if(selectedSubTask > tasks[selectedTask].subtaskCount) selectedSubTask = 1;
                 draw_all_windows();
@@ -58,7 +60,46 @@ void key_input(){
             }
             break;
         case 'a':
-            add_task();
+            if(whereWeAre == winTask) add_task();
+            if(whereWeAre == winSubTask) add_subtask();
+            break;
+        case 'l':
+            if (selectedTask > 0){
+                whereWeAre = winSubTask;
+                if(tasks[selectedTask].subtaskCount == 0){
+                    wattron(subtaskswin, COLOR_PAIR(1));
+                    mvwprintw(subtaskswin, 1, 2, "No subtasks yet!");
+                    wattroff(subtaskswin, COLOR_PAIR(1));
+                    wrefresh(subtaskswin);
+                }
+                else{
+                    selectedSubTask = 1;
+                    draw_subtasks();
+                }
+                break;
+            }
+            break;
+        case 'h':
+            if(whereWeAre == winSubTask){
+                selectedSubTask = 0;
+                whereWeAre = winTask;
+                draw_subtasks();
+                break;
+            }
+            break;
+        case 'd':
+            if(whereWeAre == winSubTask) del_subtask();
+            break;
+        case ' ':
+            if(whereWeAre == winSubTask && selectedSubTask != 0){
+                if(tasks[selectedTask].subtasks[selectedSubTask].completed == false)
+                    check_subtask();
+                else
+                    uncheck_subtask();
+            }
+            break;
+        case 'e':
+            if(whereWeAre == winSubTask) edit_subtask();
             break;
         case 'd':
             if(whereWeAre == winTask) del_task();
