@@ -89,6 +89,7 @@ void key_input(){
             break;
         case 'd':
             if(whereWeAre == winSubTask) del_subtask();
+            else if(whereWeAre == winTask) del_task();
             break;
         case ' ':
             if(whereWeAre == winSubTask && selectedSubTask != 0){
@@ -97,21 +98,14 @@ void key_input(){
                 else
                     uncheck_subtask();
             }
-            break;
-        case 'e':
-            if(whereWeAre == winSubTask) edit_subtask();
-            break;
-        case 'd':
-            if(whereWeAre == winTask) del_task();
-            break;
-        case ' ':
-            if(whereWeAre == winTask && selectedTask != 0){
+            else if(whereWeAre == winTask && selectedTask != 0){
                 if(tasks[selectedTask].completed == false) check_task();
                 else uncheck_task();
             }
             break;
         case 'e':
-            if(whereWeAre == winTask) edit_task();
+            if(whereWeAre == winSubTask) edit_subtask();
+            else if(whereWeAre == winTask) edit_task();
             break;
         default:
             break;
