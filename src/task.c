@@ -116,3 +116,41 @@ void uncheck_task(){
     }
     draw_all_windows();
 }
+
+void edit_task(){
+    if(whereWeAre != winTask || selectedTask == 0) return;
+    int pos = 0;
+    int ch;
+    char title [MAX_TITLE_LEN + 1] = {0};
+    clear_line(taskswin, selectedTask, 2, getmaxx(taskswin) - 1);
+    wattron(taskswin, COLOR_PAIR(1));
+    wattron(taskswin, A_REVERSE);
+    wmove(taskswin, selectedTask, 2);
+    wprintw(taskswin, "%d. [%c] ", selectedTask, tasks[selectedTask].completed ? 'x' : ' ');
+    wrefresh(taskswin);
+    while((ch = getch()) != '\n' && ch != KEY_ENTER){
+        if (ch == KEY_BACKSPACE || ch == 127){
+            if (pos > 0) {
+                pos--;
+                title[pos] = '\0';
+            }
+        }
+        else if (ch >= 32 && ch <= 126 && pos < MAX_TITLE_LEN) {
+            title[pos] = (char)ch;
+            pos++;
+            title[pos] = '\0';
+        }
+        wattroff(taskswin, A_REVERSE);
+        wattroff(taskswin, COLOR_PAIR(1));
+        clear_line(taskswin, selectedTask, 2, getmaxx(taskswin) - 1);
+        wattron(taskswin, COLOR_PAIR(1));
+        wattron(taskswin, A_REVERSE);
+        mvwprintw(taskswin, selectedTask, 2, "%d. [%c] %s", selectedTask,tasks[selectedTask].completed ? 'x' : ' ', title);
+        wrefresh(taskswin);
+    }
+    wattroff(taskswin, A_REVERSE);
+    wattroff(taskswin, COLOR_PAIR(1));
+    for(int i = 0; i < MAX_TITLE_LEN; i++)
+        tasks[selectedTask].title[i] = title[i];
+    draw_tasks();
+}

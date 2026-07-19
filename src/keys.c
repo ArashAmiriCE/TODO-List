@@ -69,6 +69,9 @@ void key_input(){
                 else uncheck_task();
             }
             break;
+        case 'e':
+            if(whereWeAre == winTask) edit_task();
+            break;
         default:
             break;
         }
