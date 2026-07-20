@@ -102,7 +102,7 @@ void draw_categories(){
             mvwprintw(categorieswin,
                   i,
                   2,
-                  " %s",
+                  "%s",
                   tasks[selectedTask].categories[i]);
 
             if(i == selectedCategory) wattroff(categorieswin, A_REVERSE);

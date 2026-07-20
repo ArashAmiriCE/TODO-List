@@ -62,6 +62,7 @@ void key_input(){
         case 'a':
             if(whereWeAre == winTask) add_task();
             if(whereWeAre == winSubTask) add_subtask();
+            if(whereWeAre == winCategory) add_category();
             break;
         case 'l':
             if (selectedTask > 0){
@@ -112,6 +113,28 @@ void key_input(){
             break;
         case 'n':
             if(whereWeAre == winTask) insert_deadline();
+            break;
+        case 'c':
+            if (selectedTask > 0 && whereWeAre == winTask){
+                whereWeAre = winCategory;
+                if(tasks[selectedTask].categoryCount == 0){
+                    wattron(categorieswin, COLOR_PAIR(1));
+                    mvwprintw(categorieswin, 1, 2, "No categories yet!");
+                    wattroff(categorieswin, COLOR_PAIR(1));
+                    wrefresh(categorieswin);
+                }
+                else{
+                    selectedCategory = 1;
+                    draw_categories();
+                }
+                break;
+            }
+            else if (selectedTask > 0 && whereWeAre == winCategory){
+                selectedCategory = 0;
+                whereWeAre = winTask;
+                draw_all_windows();
+                break;
+            }
             break;
         default:
             break;

@@ -55,7 +55,7 @@ void add_task() {
     tasks[taskCount].deadlineDay = 0;
     tasks[taskCount].deadlineMonth = 0;
     tasks[taskCount].deadlineYear = 0;
-    tasks[taskCount].categoryCount = 1;
+    tasks[taskCount].categoryCount = 0;
     for (int i = 0; i < MAX_CATEGORIES; i++) {
         tasks[taskCount].categories[i][0] = '\0';
     }
@@ -396,4 +396,44 @@ void insert_deadline(){
     tasks[selectedTask].deadlineMonth = month;
     tasks[selectedTask].deadlineYear = year;
     draw_all_windows();
+}
+
+void add_category(){
+    if(selectedTask == 0 || whereWeAre != winCategory) return;
+    selectedCategory = 0;
+    draw_categories();
+    char title[MAX_CATEGORY_LEN + 1] = {0};
+    int pos = 0;
+    int cursorRow = tasks[selectedTask].categoryCount + 1; 
+    int ch;
+    
+    wattron(categorieswin, COLOR_PAIR(1));
+    wattron(categorieswin, A_REVERSE);
+    while ((ch = getch()) != '\n' && ch != KEY_ENTER) {
+        if (ch == KEY_BACKSPACE || ch == 127){
+            if (pos > 0) {
+                pos--;
+                title[pos] = '\0';
+            }
+        }
+        else if (ch >= 32 && ch <= 126 && pos < MAX_TITLE_LEN) {
+            title[pos] = (char)ch;
+            pos++;
+            title[pos] = '\0';
+        }
+        wattroff(categorieswin, A_REVERSE);
+        wattroff(categorieswin, COLOR_PAIR(1));
+        clear_line(categorieswin, cursorRow, 2, getmaxx(categorieswin) - 1);
+        wattron(categorieswin, COLOR_PAIR(1));
+        wattron(categorieswin, A_REVERSE);
+        mvwprintw(categorieswin, cursorRow, 2, "%s", title);
+        wrefresh(categorieswin);
+    }
+    wattroff(categorieswin, A_REVERSE);
+    wattroff(categorieswin, COLOR_PAIR(1));
+    tasks[selectedTask].categoryCount++;
+    strncpy(tasks[selectedTask].categories[tasks[selectedTask].categoryCount], title, MAX_TITLE_LEN - 1);
+    selectedCategory = 1;
+    draw_all_windows();
+    refresh();
 }
