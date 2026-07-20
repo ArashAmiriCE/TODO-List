@@ -37,4 +37,5 @@ void edit_task();
 void edit_description();
 void insert_deadline();
 void add_category();
+void del_category();
 #endif

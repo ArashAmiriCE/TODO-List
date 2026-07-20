@@ -437,3 +437,16 @@ void add_category(){
     draw_all_windows();
     refresh();
 }
+
+void del_category(){
+    if(whereWeAre != winCategory || selectedCategory == 0) return;
+    for(int i = selectedCategory; i < tasks[selectedTask].categoryCount; i++){
+        strncpy(tasks[selectedTask].categories[i], tasks[selectedTask].categories[i + 1], MAX_CATEGORY_LEN + 1);
+    }
+    for(int i = 0; i < MAX_CATEGORY_LEN; i++){
+        tasks[selectedTask].categories[tasks[selectedTask].categoryCount][i] = '\0';
+    }
+    tasks[selectedTask].categoryCount--;
+    if(selectedCategory > tasks[selectedTask].categoryCount) selectedCategory = tasks[selectedTask].categoryCount;
+    draw_all_windows();
+}

@@ -91,6 +91,7 @@ void key_input(){
         case 'd':
             if(whereWeAre == winSubTask) del_subtask();
             else if(whereWeAre == winTask) del_task();
+            else if(whereWeAre == winCategory) del_category();
             break;
         case ' ':
             if(whereWeAre == winSubTask && selectedSubTask != 0){
