@@ -4,11 +4,6 @@
 
 void init_tui(){
     initscr();
-    // if (!has_colors()) {
-    //     endwin();
-    //     fprintf(stderr, "Your terminal doesn't support colors!");
-    //     exit(EXIT_FAILURE);
-    // }
     init_todo_color();
     int xmax, ymax;
     getmaxyx(stdscr, ymax, xmax);
@@ -17,6 +12,7 @@ void init_tui(){
     categorieswin = newwin(ymax/4, xmax/2 , ymax/2 , xmax/2 );
     subtaskswin = newwin(ymax/4, xmax/2, ymax/2 + ymax/4 , 0);
     deadlinewin = newwin(ymax/4, xmax/2 , ymax/2 + ymax/4 , xmax/2 );
+    sortdecisionwin = newwin(5, 18, ymax/2 - 2, xmax/2 - 9);
     refresh();
     draw_all_windows();
 }
@@ -149,4 +145,17 @@ void draw_all_windows(){
     draw_categories();
     draw_subtasks();
     draw_deadline();
+}
+
+void draw_sortdecision(){
+    wattron(sortdecisionwin, COLOR_PAIR(2));
+    box(sortdecisionwin, 0, 0);
+    mvwprintw(sortdecisionwin, 1, 1, "which sort?     ");
+    if(selectedSort == 1) wattron(sortdecisionwin, A_REVERSE);
+    mvwprintw(sortdecisionwin, 2, 1, "sort by alphabet");
+    if(selectedSort == 1) wattroff(sortdecisionwin, A_REVERSE);
+    if(selectedSort == 2) wattron(sortdecisionwin, A_REVERSE);
+    mvwprintw(sortdecisionwin, 3, 1, "sort by deadline");
+    if(selectedSort == 2) wattroff(sortdecisionwin, A_REVERSE);
+    wrefresh(sortdecisionwin);
 }

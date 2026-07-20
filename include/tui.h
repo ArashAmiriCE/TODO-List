@@ -10,5 +10,6 @@ extern void draw_categories(void);
 extern void draw_subtasks(void);
 extern void draw_deadline(void);
 extern void draw_all_windows(void);
+extern void draw_sortdecision(void);
 
 #endif

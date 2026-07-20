@@ -1,4 +1,5 @@
 #include <ncurses.h>
+#include <string.h>
 #include "../include/globals.h"
 #include "../include/tui.h"
 #include "../include/task.h"
@@ -33,6 +34,12 @@ void key_input(){
                 draw_all_windows();
                 break;
             }
+            else if (whereWeAre == winSort){
+                selectedSort--;
+                if(selectedSort < 1) selectedSort = 2;
+                draw_sortdecision();
+                break;
+            }
             break;
         case 'j':
             if(whereWeAre == winTask){
@@ -56,6 +63,12 @@ void key_input(){
                 selectedCategory = selectedCategory + 1;
                 if(selectedCategory > tasks[selectedTask].categoryCount) selectedCategory = 1;
                 draw_all_windows();
+                break;
+            }
+            else if (whereWeAre == winSort){
+                selectedSort++;
+                if(selectedSort > 2) selectedSort = 1;
+                draw_sortdecision();
                 break;
             }
             break;
@@ -135,6 +148,47 @@ void key_input(){
                 whereWeAre = winTask;
                 draw_all_windows();
                 break;
+            }
+            break;
+        case 's':
+            if(whereWeAre == winTask){
+                whereWeAre = winSort;
+                draw_sortdecision();
+                break;
+            }
+        case '\n':
+            if(whereWeAre == winSort && selectedSort != 0){
+                if (selectedSort == 1) {
+                    for (int i = 1; i < taskCount; i++) {
+                        for (int j = i + 1; j <= taskCount; j++) {
+                            if (strcmp(tasks[i].title, tasks[j].title) > 0) {
+                                Task temp = tasks[i];
+                                tasks[i] = tasks[j];
+                                tasks[j] = temp;
+                            }
+                        }
+                    }
+                } 
+                else if (selectedSort == 2) {
+                    for (int i = 1; i < taskCount; i++) {
+                        for (int j = i + 1; j <= taskCount; j++) {
+                            int year1 = tasks[i].deadlineYear == 0 ? 9999 : tasks[i].deadlineYear;
+                            int year2 = tasks[j].deadlineYear == 0 ? 9999 : tasks[j].deadlineYear;
+                            if (year1 > year2 ||
+                                (year1 == year2 && tasks[i].deadlineMonth > tasks[j].deadlineMonth) ||
+                                (year1 == year2 && tasks[i].deadlineMonth == tasks[j].deadlineMonth && tasks[i].deadlineDay > tasks[j].deadlineDay)) {
+                                Task temp = tasks[i];
+                                tasks[i] = tasks[j];
+                                tasks[j] = temp;
+                            }
+                        }
+                    }
+                }
+                selectedSort = 0;
+                whereWeAre = winTask;
+                selectedTask = 0;
+                werase(sortdecisionwin);
+                draw_all_windows();
             }
             break;
         default:
