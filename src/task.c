@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include "cJSON.h"
 #include <ncurses.h>
 #include "../include/task.h"
 #include "../include/globals.h"
@@ -449,4 +450,165 @@ void del_category(){
     tasks[selectedTask].categoryCount--;
     if(selectedCategory > tasks[selectedTask].categoryCount) selectedCategory = tasks[selectedTask].categoryCount;
     draw_all_windows();
+}
+
+void save_tasks_to_file() {
+    cJSON *root = cJSON_CreateArray();
+    if (root == NULL) {
+        return;
+    }
+    for (int i = 1; i <= taskCount; i++) {
+        Task *t = &tasks[i];
+        cJSON *task_obj = cJSON_CreateObject();
+        if (task_obj == NULL) {
+            cJSON_Delete(root);
+            return;
+        }
+        cJSON_AddStringToObject(task_obj, "title", t->title);
+        cJSON_AddStringToObject(task_obj, "description", t->description);
+        cJSON_AddNumberToObject(task_obj, "priority", t->priority);
+        cJSON_AddBoolToObject(task_obj, "completed", t->completed);
+        cJSON_AddNumberToObject(task_obj, "deadlineDay", t->deadlineDay);
+        cJSON_AddNumberToObject(task_obj, "deadlineMonth", t->deadlineMonth);
+        cJSON_AddNumberToObject(task_obj, "deadlineYear", t->deadlineYear);
+        cJSON_AddNumberToObject(task_obj, "categoryCount", t->categoryCount);
+        cJSON *categories_arr = cJSON_CreateArray();
+        for (int j = 0; j < t->categoryCount; j++) {
+            cJSON_AddItemToArray(categories_arr, cJSON_CreateString(t->categories[j+1])); 
+        }
+        cJSON_AddItemToObject(task_obj, "categories", categories_arr);
+        cJSON *subtasks_arr = cJSON_CreateArray();
+        for (int j = 1; j <= t->subtaskCount; j++) {
+            cJSON *sub_obj = cJSON_CreateObject();
+            cJSON_AddStringToObject(sub_obj, "title", t->subtasks[j].title);
+            cJSON_AddBoolToObject(sub_obj, "completed", t->subtasks[j].completed);
+            cJSON_AddItemToArray(subtasks_arr, sub_obj);
+        }
+        cJSON_AddItemToObject(task_obj, "subtasks", subtasks_arr);
+
+        cJSON_AddItemToArray(root, task_obj);
+    }
+    char *json_string = cJSON_Print(root);
+    if (json_string == NULL) {
+        cJSON_Delete(root);
+        return;
+    }
+    FILE *file = fopen(DATA_FILE, "w");
+    if (file == NULL) {
+        free(json_string);
+        cJSON_Delete(root);
+        return;
+    }
+    fprintf(file, "%s", json_string);
+    fclose(file);
+    free(json_string);
+    cJSON_Delete(root);
+}
+
+void load_tasks_from_file() {
+    FILE *file = fopen(DATA_FILE, "r");
+    if (file == NULL) {
+        return;
+    }
+    fseek(file, 0, SEEK_END);
+    long file_size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    if (file_size <= 0) {
+        fclose(file);
+        return;
+    }
+    char *content = (char *)malloc(file_size + 1);
+    if (content == NULL) {
+        fclose(file);
+        return;
+    }
+    fread(content, 1, file_size, file);
+    content[file_size] = '\0';
+    fclose(file);
+    cJSON *root = cJSON_Parse(content);
+    free(content);
+    if (root == NULL) {
+        return;
+    }
+    if (!cJSON_IsArray(root)) {
+        cJSON_Delete(root);
+        return;
+    }
+    int count = cJSON_GetArraySize(root);
+    if (count > MAX_TASKS) count = MAX_TASKS;
+    taskCount = 0;
+    for (int i = 0; i < count; i++) {
+        cJSON *task_obj = cJSON_GetArrayItem(root, i);
+        if (task_obj == NULL) continue;
+        Task *t = &tasks[i+1];
+        cJSON *title = cJSON_GetObjectItem(task_obj, "title");
+        if (title && cJSON_IsString(title)) {
+            strncpy(t->title, title->valuestring, MAX_TITLE_LEN - 1);
+            t->title[MAX_TITLE_LEN - 1] = '\0';
+        } else {
+            t->title[0] = '\0';
+        }
+
+        cJSON *desc = cJSON_GetObjectItem(task_obj, "description");
+        if (desc && cJSON_IsString(desc)) {
+            strncpy(t->description, desc->valuestring, MAX_DESCRIPTION_LEN - 1);
+            t->description[MAX_DESCRIPTION_LEN - 1] = '\0';
+        } else {
+            t->description[0] = '\0';
+        }
+
+        cJSON *prio = cJSON_GetObjectItem(task_obj, "priority");
+        t->priority = (prio && cJSON_IsNumber(prio)) ? prio->valueint : 0;
+
+        cJSON *comp = cJSON_GetObjectItem(task_obj, "completed");
+        t->completed = (comp && cJSON_IsBool(comp)) ? comp->valueint : false;
+
+        cJSON *day = cJSON_GetObjectItem(task_obj, "deadlineDay");
+        t->deadlineDay = (day && cJSON_IsNumber(day)) ? day->valueint : 0;
+        cJSON *mon = cJSON_GetObjectItem(task_obj, "deadlineMonth");
+        t->deadlineMonth = (mon && cJSON_IsNumber(mon)) ? mon->valueint : 0;
+        cJSON *year = cJSON_GetObjectItem(task_obj, "deadlineYear");
+        t->deadlineYear = (year && cJSON_IsNumber(year)) ? year->valueint : 0;
+        cJSON *cats = cJSON_GetObjectItem(task_obj, "categories");
+        t->categoryCount = 0;
+        if (cats && cJSON_IsArray(cats)) {
+            int cat_count = cJSON_GetArraySize(cats);
+            if (cat_count > MAX_CATEGORIES) cat_count = MAX_CATEGORIES;
+            for (int j = 0; j < cat_count; j++) {
+                cJSON *cat = cJSON_GetArrayItem(cats, j);
+                if (cat && cJSON_IsString(cat)) {
+                    strncpy(t->categories[j+1], cat->valuestring, MAX_CATEGORY_LEN - 1);
+                    t->categories[j+1][MAX_CATEGORY_LEN - 1] = '\0';
+                    t->categoryCount++;
+                }
+            }
+        }
+        cJSON *subs = cJSON_GetObjectItem(task_obj, "subtasks");
+        t->subtaskCount = 0;
+        if (subs && cJSON_IsArray(subs)) {
+            int sub_count = cJSON_GetArraySize(subs);
+            if (sub_count > MAX_SUBTASKS) sub_count = MAX_SUBTASKS;
+            for (int j = 0; j < sub_count; j++) {
+                cJSON *sub = cJSON_GetArrayItem(subs, j);
+                if (sub == NULL) continue;
+                cJSON *sub_title = cJSON_GetObjectItem(sub, "title");
+                cJSON *sub_comp = cJSON_GetObjectItem(sub, "completed");
+                if (sub_title && cJSON_IsString(sub_title)) {
+                    strncpy(t->subtasks[j+1].title, sub_title->valuestring, MAX_TITLE_LEN - 1);
+                    t->subtasks[j+1].title[MAX_TITLE_LEN - 1] = '\0';
+                } else {
+                    t->subtasks[j+1].title[0] = '\0';
+                }
+                t->subtasks[j+1].completed = (sub_comp && cJSON_IsBool(sub_comp)) ? sub_comp->valueint : false;
+                t->subtaskCount++;
+            }
+        }
+
+        taskCount++;
+    }
+    cJSON_Delete(root);
+    selectedTask = 0;
+    selectedSubTask = 0;
+    selectedCategory = 0;
+    selectedSort = 0;
 }

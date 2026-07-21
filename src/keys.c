@@ -191,6 +191,10 @@ void key_input(){
                 draw_all_windows();
             }
             break;
+        case 'w':
+            save_tasks_to_file();
+            draw_success();
+            break;
         default:
             break;
         }

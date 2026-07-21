@@ -38,4 +38,6 @@ void edit_description();
 void insert_deadline();
 void add_category();
 void del_category();
+void save_tasks_to_file(void);
+void load_tasks_from_file(void);
 #endif

@@ -159,3 +159,16 @@ void draw_sortdecision(){
     if(selectedSort == 2) wattroff(sortdecisionwin, A_REVERSE);
     wrefresh(sortdecisionwin);
 }
+
+void draw_success(){
+    int xmax, ymax;
+    getmaxyx(stdscr, ymax, xmax);
+    WINDOW* success = newwin(3,9,ymax/2 - 2, xmax/2 - 4);
+    wattron(success, COLOR_PAIR(2));
+    box(success, 0, 0);
+    mvwprintw(success, 1,1,"success");
+    wrefresh(success);
+    getch();
+    werase(success);
+    draw_all_windows();
+}

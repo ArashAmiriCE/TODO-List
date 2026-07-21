@@ -11,5 +11,6 @@ extern void draw_subtasks(void);
 extern void draw_deadline(void);
 extern void draw_all_windows(void);
 extern void draw_sortdecision(void);
+extern void draw_success(void);
 
 #endif
