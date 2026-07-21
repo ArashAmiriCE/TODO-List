@@ -14,7 +14,7 @@ static void clear_line(WINDOW *win, int row, int col_start, int col_end) {
 
 void add_task() {
     selectedTask = 0;
-    draw_tasks();
+    draw_all_windows();
     char title[MAX_TITLE_LEN + 1] = {0};
     int pos = 0;
     int cursorRow = taskCount + 1; 
