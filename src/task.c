@@ -1,6 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
-#include "cJSON.h"
+#include "../include/cJSON.h"
 #include <ncurses.h>
 #include "../include/task.h"
 #include "../include/globals.h"
